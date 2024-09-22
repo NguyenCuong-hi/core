@@ -1,10 +1,13 @@
 package com.example.core.service;
 
 import com.example.core.dto.request.UserDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
+
+    Page<UserDto> searchUser();
 
     UserDto getUserById(Long id);
 

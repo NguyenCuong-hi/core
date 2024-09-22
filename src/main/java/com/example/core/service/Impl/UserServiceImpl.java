@@ -5,7 +5,11 @@ import com.example.core.entity.User;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -13,6 +17,14 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public Page<UserDto> searchUser() {
+
+        List<User> users = userRepository.getAllBy();
+        users.
+        return null;
+    }
 
     public UserDto getUserById(Long id) {
         User user = userRepository.getById(id);

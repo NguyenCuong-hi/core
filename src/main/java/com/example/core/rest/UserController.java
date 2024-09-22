@@ -3,7 +3,10 @@ package com.example.core.rest;
 import com.example.core.dto.request.UserDto;
 import com.example.core.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -11,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+
+    @GetMapping("/page")
+    public Page<UserDto> getPage() {
+        return userService.searchUser();
+    }
 
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable(value = "id") Long id) {
