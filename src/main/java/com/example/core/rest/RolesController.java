@@ -2,15 +2,15 @@ package com.example.core.rest;
 
 import com.example.core.dto.request.RoleDto;
 import com.example.core.service.RoleService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/roles")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RolesController {
 
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @GetMapping("/{id}")
     public RoleDto getById(@PathVariable(value = "id") Long id) {

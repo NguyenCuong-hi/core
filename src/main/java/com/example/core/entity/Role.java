@@ -14,7 +14,7 @@ public class Role extends BaseObject implements GrantedAuthority {
     @Transient
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "role_name", length = 255, nullable =true)
+    @Column(name = "role_name", length = 255, nullable =false)
     private String name;
 
     @Column(name = "role_description", length = 255, nullable =true)

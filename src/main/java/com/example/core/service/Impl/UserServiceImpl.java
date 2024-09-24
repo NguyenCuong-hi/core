@@ -4,25 +4,26 @@ import com.example.core.dto.request.UserDto;
 import com.example.core.entity.User;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Page<UserDto> searchUser() {
 
         List<User> users = userRepository.getAllBy();
-        users.
         return null;
     }
 
