@@ -1,9 +1,12 @@
 package com.example.core.dto.request;
 
-import com.example.core.entity.BaseObject;
 import com.example.core.entity.Role;
 
-public class RoleDto extends BaseObjectDto {
+import java.io.Serializable;
+
+public class RoleDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private Long id;
 
     private String name;
 
@@ -26,21 +29,19 @@ public class RoleDto extends BaseObjectDto {
     }
 
     public RoleDto() {
-
     }
 
-    public RoleDto(AuditableEntityDto auditableEntityDto, String name) {
-        super(auditableEntityDto);
-        this.name = name;
+    public RoleDto(Role entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.description = entity.getDescription();
     }
 
-    public RoleDto(BaseObject entity, String name) {
-        super(entity);
-        this.name = name;
-    }
-
-    public RoleDto(Role role) {
-        this.name = role.getName();
-        this.description = role.getDescription();
+    public Role toEntity() {
+        Role entity = new Role();
+        entity.setId(this.id);
+        entity.setName(this.name);
+        entity.setDescription(this.description);
+        return entity;
     }
 }

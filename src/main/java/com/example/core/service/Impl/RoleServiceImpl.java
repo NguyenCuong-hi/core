@@ -23,7 +23,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDto createBy(RoleDto roleDto) {
         Role role = new Role();
-        role.setId(1L);
         this.validRoleDto(roleDto);
         this.setUser(roleDto, role);
         role = roleRepo.save(role);

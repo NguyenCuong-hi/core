@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -16,9 +17,13 @@ public class BaseObject extends AuditableEntity {
     @GenericGenerator(name = "native",
             strategy = "native")
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY,
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY,
             generator = "native")
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(
+            name = "id",
+            unique = true,
+            nullable = true)
     private Long id;
 
 
@@ -58,6 +63,7 @@ public class BaseObject extends AuditableEntity {
 
     public BaseObject(){
         this.uuid = UUID.randomUUID();
+        super.setCreatedDate(LocalDateTime.now());
     }
 
     public BaseObject (BaseObject object){
@@ -65,6 +71,7 @@ public class BaseObject extends AuditableEntity {
         if (object != null){
             this.id = object.getId();
             this.uuid = UUID.randomUUID();
+            super.setCreatedDate(LocalDateTime.now());
         }
     }
 

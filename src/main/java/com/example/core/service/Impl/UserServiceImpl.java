@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         this.validUserDto(userDto);
         this.setUser(userDto, user);
+        userRepository.save(user);
         return new UserDto(user);
     }
 
@@ -64,6 +65,10 @@ public class UserServiceImpl implements UserService {
         user.setLastLogin(userDto.getLastLogin());
         user.setDescription(user.getDescription());
         user.setNote(user.getNote());
+    }
+
+    private void validRoles(UserDto userDto){
+
     }
 
 

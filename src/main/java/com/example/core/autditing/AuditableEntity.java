@@ -8,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @MappedSuperclass
 @EntityListeners({EntityListeners.class})
@@ -20,13 +21,13 @@ public class AuditableEntity implements Serializable {
             nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "create_by", nullable = false)
+    @Column(name = "create_by", nullable = true)
     private String createBy;
 
-    @Column(name = "modify_date", nullable = false)
+    @Column(name = "modify_date", nullable = true)
     private LocalDateTime modifyDate;
 
-    @Column(name = "modify_by", nullable = false)
+    @Column(name = "modify_by", nullable = true)
     private String modifyBy;
 
     public LocalDateTime getCreatedDate(){

@@ -2,15 +2,19 @@ package com.example.core.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@XmlRootElement
 @Entity
 @Table(name = "users")
 public class User extends BaseObject implements UserDetails {
@@ -29,12 +33,24 @@ public class User extends BaseObject implements UserDetails {
     @ManyToMany(
             fetch = FetchType.EAGER
     )
-    private Set<Role> roles;
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(
+            name = "users_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.EAGER
     )
-    private Set<UserGroup> userGroups;
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(
+            name = "users_group",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "group_id")}
+    )
+    private Set<UserGroup> userGroups = new HashSet<>();
 
     @Column(name = "just_created")
     private Boolean justCreated = true;

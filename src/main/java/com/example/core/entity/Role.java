@@ -6,9 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@Entity
+@XmlRootElement
 @Table(name = "role")
+@Entity
 public class Role extends BaseObject implements GrantedAuthority {
 
     @Transient
@@ -36,7 +38,7 @@ public class Role extends BaseObject implements GrantedAuthority {
         this.description = description;
     }
 
-    @Override
+    @Transient
     public String getAuthority() {
         return this.name;
     }
