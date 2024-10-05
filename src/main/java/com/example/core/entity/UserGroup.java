@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user_groups")
-public class UserGroup extends AuditableEntity {
+public class UserGroup extends BaseObject {
 
     private static final long serialVersionUID = 1L;
 

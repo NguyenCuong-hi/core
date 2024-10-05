@@ -22,9 +22,9 @@ public class UserDto extends BaseObject {
 
     private String email;
 
-    private Set<Role> roles;
+    private Set<RoleDto> roles;
 
-    private Set<UserGroup> userGroups;
+    private Set<UserGroupDto> userGroups;
 
     private Boolean justCreated;
 
@@ -54,8 +54,6 @@ public class UserDto extends BaseObject {
         this.username = user.getUsername();
         this.password = user.getPassword();
 
-        this.roles = user.getRoles();
-        this.userGroups = user.getUserGroups();
     }
 
 
