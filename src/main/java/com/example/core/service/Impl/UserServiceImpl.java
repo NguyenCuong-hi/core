@@ -35,11 +35,19 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
     public UserDto getUserById(Long id) {
         User user = userRepo.getById(id);
         return new UserDto(user);
     }
 
+    @Override
+    public UserDto getUserByUsername(String username) {
+        User user = userRepo.getUserByUsername(username);
+        return new UserDto(user);
+    }
+
+    @Override
     public UserDto createBy(UserDto userDto) {
         User user = new User();
         this.validUserDto(userDto);

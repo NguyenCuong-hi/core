@@ -4,7 +4,7 @@ import com.example.core.entity.Role;
 
 import java.io.Serializable;
 
-public class RoleDto implements Serializable {
+public class RoleDto extends AuditableEntityDto {
     private static final long serialVersionUID = 1L;
     private Long id;
 

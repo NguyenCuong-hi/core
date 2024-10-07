@@ -11,6 +11,8 @@ public interface UserService {
 
     UserDto getUserById(Long id);
 
+    UserDto getUserByUsername(String username);
+
     UserDto createBy(UserDto user);
 
     UserDto updateBy(Long id, UserDto userDto);

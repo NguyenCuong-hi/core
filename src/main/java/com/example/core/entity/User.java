@@ -262,7 +262,9 @@ public class User extends BaseObject implements UserDetails {
     @Override
     @Transient
     @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new HashSet<GrantedAuthority>(this.roles);
+    public Collection<GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.addAll(this.roles);
+        return authorities;
     }
 }

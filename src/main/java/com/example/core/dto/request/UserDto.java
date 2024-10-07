@@ -1,20 +1,20 @@
 package com.example.core.dto.request;
 
-import com.example.core.entity.BaseObject;
-import com.example.core.entity.Role;
 import com.example.core.entity.User;
-import com.example.core.entity.UserGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserDto extends BaseObject {
+public class UserDto extends AuditableEntityDto {
+
+    private Long id;
 
     private String username;
 
@@ -55,6 +55,37 @@ public class UserDto extends BaseObject {
         this.password = user.getPassword();
 
     }
+
+    public User toEntity() {
+        User entity = new User();
+        entity.setId(this.id);
+        entity.setUsername(this.username);
+        entity.setPassword(this.password);
+        entity.setEmail(this.email);
+        entity.setAccountNonExpired(true);
+        entity.setAccountNonLocked(true);
+        entity.setCredentialsNonExpired(true);
+
+        Iterator iRole;
+        if (this.roles.size() > 0){
+            iRole = this.roles.iterator();
+            while (iRole.hasNext()){
+                RoleDto roleDto = (RoleDto) iRole.next();
+                entity.getRoles().add(roleDto.toEntity());
+            }
+        }
+
+        Iterator iUserGroup;
+        if (this.userGroups.size()> 0){
+            iUserGroup = this.userGroups.iterator();
+            while (iUserGroup.hasNext()){
+                UserGroupDto userGroupDto = (UserGroupDto) iUserGroup.next();
+                entity.getUserGroups().add(userGroupDto.toEntity());
+            }
+        }
+        return entity;
+    }
+
 
 
 }
