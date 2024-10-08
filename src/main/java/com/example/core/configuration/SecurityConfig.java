@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,10 +29,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                .antMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                .anyRequest().authenticated()
+        http.authorizeHttpRequests(request -> {
+                    try {
+                        request
+                                .antMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                                .anyRequest().authenticated()
+                                .and()
+                                .httpBasic()
+                                .and()
+                                .sessionManagement();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
         );
+
+
 
 
         http.csrf(AbstractHttpConfigurer::disable);
