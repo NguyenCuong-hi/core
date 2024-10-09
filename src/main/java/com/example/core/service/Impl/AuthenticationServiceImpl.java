@@ -3,37 +3,46 @@ package com.example.core.service.Impl;
 import com.example.core.dto.request.AuthenticationReqDto;
 import com.example.core.dto.response.AuthenticationRespDto;
 import com.example.core.dto.response.IntroSpecRespDto;
+import com.example.core.entity.Token;
 import com.example.core.entity.User;
 import com.example.core.repository.AuthenticationRepository;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.AuthenticationService;
 import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimNames;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 
-    private final String SIGNER_KEY;
-    private final Long REFRESH_TOKEN_TIME;
-    private final AuthenticationRepository authenRepo;
+    @Value("${security.jwt.signal-key}")
+    private String SIGNER_KEY;
+
+    @Value("${security.jwt.time-refresh}")
+    private Long REFRESH_TOKEN_TIME;
+
+    private final AuthenticationRepository authRepo;
+
     private final UserRepository userRepo;
 
     @Override
@@ -62,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (!verified && expiredTime.after(new Date()))
             throw new VerifyError("");
-        if (authenRepo.existsById(UUID.fromString(signedJWT.getJWTClaimsSet().getJWTID())))
+        if (authRepo.existsById(UUID.fromString(signedJWT.getJWTClaimsSet().getJWTID())))
             throw new VerifyError("");
 
         return signedJWT;
@@ -89,8 +98,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 .issuer("random")
-                .issueTime(new Date())
+                .issueTime(new Date(Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user) )
                 .build();
+
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+        JWSObject jwsObject = new JWSObject(header, payload);
+        try {
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+
+            Token token = new Token();
+            token.setId(UUID.fromString(jwtClaimsSet.getJWTID()));
+            token.setExpiredTime(null);
+            authRepo.save(token);
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            log.info("Cannot create token", e);
+            throw new RuntimeException();
+        }
+
+    }
+
+    private String buildScope(User user){
+        StringBuilder str = new StringBuilder("");
+
+        if (!CollectionUtils.isEmpty(user.getRoles())){
+            user.getRoles().forEach(role -> {
+                str.append("ROLE_").append(role.getName());
+
+            });
+        }
+        return str.toString();
     }
 
     @Override
@@ -99,7 +138,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationRespDto refreshToken(String token) {
+    public AuthenticationRespDto refreshToken(String token) throws ParseException, JOSEException {
+        var signedJWT = verifyToken(token, true);
+
         return null;
     }
 }

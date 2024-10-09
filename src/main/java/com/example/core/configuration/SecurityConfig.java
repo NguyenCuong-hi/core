@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -26,6 +29,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailService userDetailService;
+
+    @Autowired
+    private CustomJwtDecode decode;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,12 +50,24 @@ public class SecurityConfig {
                 }
         );
 
-
-
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(config -> config.decoder(decode)
+                .jwtAuthenticationConverter(authConverter()))
+                .authenticationEntryPoint(new AuthEntryPoint() {
+                }));
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors().disable();
         return http.build();
+    }
+
+    @Bean
+    JwtAuthenticationConverter authConverter(){
+        JwtGrantedAuthoritiesConverter grantAuthConverter = new JwtGrantedAuthoritiesConverter();
+        grantAuthConverter.setAuthorityPrefix("");
+
+        JwtAuthenticationConverter authConvert = new JwtAuthenticationConverter();
+        authConvert.setJwtGrantedAuthoritiesConverter(grantAuthConverter);
+        return authConvert;
     }
 
     @Autowired

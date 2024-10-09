@@ -2,17 +2,13 @@ package com.example.core.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "token")
-public class Token extends BaseObject{
-
-    @Id
-    private UUID id;
+public class Token extends EntityObject{
 
     @Column(name = "expired_time")
     private LocalDateTime expiredTime;
@@ -21,15 +17,13 @@ public class Token extends BaseObject{
         super(object);
     }
 
-    public Token(BaseObject object, UUID id, LocalDateTime expiredTime) {
-        super(object);
-        this.id = id;
-        this.expiredTime = expiredTime;
+    public Token() {
+
     }
 
-
-    public void setId(UUID id) {
-        this.id = id;
+    public Token(BaseObject object, UUID id, LocalDateTime expiredTime) {
+        super(object);
+        this.expiredTime = expiredTime;
     }
 
     public LocalDateTime getExpiredTime() {
