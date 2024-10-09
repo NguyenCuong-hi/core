@@ -50,6 +50,10 @@ public class UserDto extends AuditableEntityDto {
 
     private String note;
 
+    public UserDto(){
+
+    }
+
     public UserDto(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
