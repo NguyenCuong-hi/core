@@ -1,13 +1,17 @@
 package com.example.core.service.Impl;
 
+import com.example.core.configuration.UserDetailService;
 import com.example.core.dto.request.AuthenticationReqDto;
+import com.example.core.dto.request.OTPRequestDto;
 import com.example.core.dto.response.AuthenticationRespDto;
 import com.example.core.dto.response.IntroSpecRespDto;
+import com.example.core.dto.response.OTPResponseDto;
 import com.example.core.entity.Token;
 import com.example.core.entity.User;
 import com.example.core.repository.AuthenticationRepository;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.AuthenticationService;
+import com.example.core.service.OTPService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -16,6 +20,9 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationRepository authRepo;
 
     private final UserRepository userRepo;
+
+    private final OTPService otpService;
 
     @Override
     public IntroSpecRespDto introspect(String token) {
@@ -92,6 +101,52 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return AuthenticationRespDto.builder().token(token).authenticated(true).build();
     }
+
+    @Override
+    public OTPResponseDto getOTP(String phoneNumber) {
+        OTPResponseDto response = new OTPResponseDto();
+        try{
+            String otp = otpService.generateOTP(phoneNumber);
+            response.setOtp(otp);
+            response.setStatus(true);
+            response.setMessage("Successful");
+        }
+        catch (Exception e){
+            response.setStatus(false);
+            response.setMessage("Fail");
+        }
+        return response;
+    }
+
+    @Override
+    public AuthenticationRespDto authOTP(OTPRequestDto request) {
+        String token = null;
+        try {
+            if (request.getOtp().equals(otpService.getCacheOTP(request.getOtp()))){
+                User user = new User();
+                user.setUsername(request.getPhoneNumber());
+                token = generationToken(user);
+
+                otpService.clearOTP(request.getOtp());
+            }
+        }
+        catch (Exception e){
+
+        }
+        return AuthenticationRespDto.builder().token(token).build();
+    }
+
+//    private String checkAuthToken(OTPRequestDto otp) throws Exception {
+//        try{
+//            authManager.authenticate( new UsernamePasswordAuthenticationToken(otp.getPhoneNumber(), ""));
+//        }
+//        catch (BadCredentialsException e){
+//            throw new Exception("I", e);
+//        }
+//
+//
+//    }
+
 
     private String generationToken(User user){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);

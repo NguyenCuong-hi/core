@@ -14,6 +14,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 import static com.example.core.constans.Constants.USER_NOT_FOUND;
 
@@ -31,7 +32,7 @@ public class UserDetailService implements UserDetailsService, InitializingBean {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto userDto = userService.getUserByUsername(username);
-        if (ObjectUtils.isEmpty(userDto)){
+        if (Objects.isNull(userDto)){
             throw new UsernameNotFoundException(USER_NOT_FOUND);
         }
         User user = userDto.toEntity();

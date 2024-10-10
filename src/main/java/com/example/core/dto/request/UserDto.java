@@ -22,6 +22,8 @@ public class UserDto extends AuditableEntityDto {
 
     private String email;
 
+    private String phoneNumber;
+
     private Set<RoleDto> roles;
 
     private Set<UserGroupDto> userGroups;
@@ -66,6 +68,7 @@ public class UserDto extends AuditableEntityDto {
         entity.setUsername(this.username);
         entity.setPassword(this.password);
         entity.setEmail(this.email);
+        entity.setPhoneNumber(this.phoneNumber);
         entity.setAccountNonExpired(true);
         entity.setAccountNonLocked(true);
         entity.setCredentialsNonExpired(true);

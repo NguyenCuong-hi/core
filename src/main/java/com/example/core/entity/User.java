@@ -30,6 +30,9 @@ public class User extends BaseObject implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @ManyToMany(
             fetch = FetchType.EAGER
     )
@@ -246,10 +249,18 @@ public class User extends BaseObject implements UserDetails {
         this.note = note;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public User() {
     }
 
-    public User(String username, String password, String email, Boolean isActive,
+    public User(String username, String password, String email, String phoneNumber, Boolean isActive,
                 Boolean isAccountNonExpired, Boolean isAccountNonLocked) {
         this.username = username;
         this.password = password;
@@ -257,6 +268,8 @@ public class User extends BaseObject implements UserDetails {
         this.isActive = isActive;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
+        this.phoneNumber = phoneNumber;
+
     }
 
     @Override
