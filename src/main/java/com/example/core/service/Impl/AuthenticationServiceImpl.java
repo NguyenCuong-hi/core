@@ -1,6 +1,7 @@
 package com.example.core.service.Impl;
 
-import com.example.core.configuration.UserDetailService;
+import com.example.core.constans.ErrorCodes;
+import com.example.core.constans.ErrorMessage;
 import com.example.core.dto.request.AuthenticationReqDto;
 import com.example.core.dto.request.OTPRequestDto;
 import com.example.core.dto.response.AuthenticationRespDto;
@@ -8,6 +9,7 @@ import com.example.core.dto.response.IntroSpecRespDto;
 import com.example.core.dto.response.OTPResponseDto;
 import com.example.core.entity.Token;
 import com.example.core.entity.User;
+import com.example.core.exception.ExceptionResponse;
 import com.example.core.repository.AuthenticationRepository;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.AuthenticationService;
@@ -20,9 +22,6 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
+
+import static com.example.core.constans.ErrorCodes.TOKEN_FAIL;
 
 @Service
 @Slf4j
@@ -57,15 +58,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public IntroSpecRespDto introspect(String token) {
         boolean isValid = true;
-        try{
+        try {
             verifyToken(token, false);
-        } catch (Exception e){
+        } catch (Exception e) {
             isValid = false;
         }
         return IntroSpecRespDto.builder().valid(isValid).build();
     }
 
-    private SignedJWT verifyToken (String token, boolean isRefresh) throws JOSEException, ParseException {
+    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
@@ -79,10 +80,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         boolean verified = signedJWT.verify(verifier);
 
         if (!verified && expiredTime.after(new Date()))
-            throw new VerifyError("");
+            throw new ExceptionResponse(ErrorCodes.TOKEN_FAIL, ErrorMessage.TOKEN_FAIL, null);
         if (authRepo.existsById(UUID.fromString(signedJWT.getJWTClaimsSet().getJWTID())))
-            throw new VerifyError("");
-
+            throw new ExceptionResponse(ErrorCodes.TOKEN_FAIL, ErrorMessage.TOKEN_FAIL, null);
         return signedJWT;
     }
 
@@ -92,10 +92,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepo.getUserByUsername(request.getUsername());
         if (ObjectUtils.isEmpty(user))
-            throw new EntityNotFoundException();
+            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, user.getUsername());
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated)
-            throw new EntityNotFoundException();
+            throw new ExceptionResponse(ErrorCodes.AUTHENTICATION_FAIL, ErrorMessage.AUTHENTICATION_FAIL, null);
 
         var token = generationToken(user);
 
@@ -105,13 +105,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public OTPResponseDto getOTP(String phoneNumber) {
         OTPResponseDto response = new OTPResponseDto();
-        try{
+        try {
             String otp = otpService.generateOTP(phoneNumber);
             response.setOtp(otp);
             response.setStatus(true);
             response.setMessage("Successful");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             response.setStatus(false);
             response.setMessage("Fail");
         }
@@ -122,16 +121,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationRespDto authOTP(OTPRequestDto request) {
         String token = null;
         try {
-            if (request.getOtp().equals(otpService.getCacheOTP(request.getOtp()))){
+            if (request.getOtp().equals(otpService.getCacheOTP(request.getOtp()))) {
                 User user = new User();
                 user.setUsername(request.getPhoneNumber());
                 token = generationToken(user);
 
                 otpService.clearOTP(request.getOtp());
             }
-        }
-        catch (Exception e){
-
+        } catch (Exception e) {
+            throw new ExceptionResponse(ErrorCodes.TOKEN_FAIL, ErrorMessage.TOKEN_FAIL, e.getMessage());
         }
         return AuthenticationRespDto.builder().token(token).build();
     }
@@ -148,14 +146,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //    }
 
 
-    private String generationToken(User user){
+    private String generationToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 .issuer("random")
                 .issueTime(new Date(Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user) )
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -170,15 +168,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwsObject.serialize();
         } catch (JOSEException e) {
             log.info("Cannot create token", e);
-            throw new RuntimeException();
+            throw new ExceptionResponse(ErrorCodes.AUTHENTICATION_FAIL, ErrorMessage.AUTHENTICATION_FAIL, e.getMessage());
         }
 
     }
 
-    private String buildScope(User user){
+    private String buildScope(User user) {
         StringBuilder str = new StringBuilder("");
 
-        if (!CollectionUtils.isEmpty(user.getRoles())){
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
             user.getRoles().forEach(role -> {
                 str.append("ROLE_").append(role.getName());
 

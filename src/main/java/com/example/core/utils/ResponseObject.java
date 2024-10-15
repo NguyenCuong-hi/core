@@ -94,7 +94,7 @@ public class ResponseObject <T> {
     public static <T> ResponseObject<T> buildException (int code, Object ... args){
         ResponseObject<T> response = new ResponseObject<>();
         response.code = code;
-
+        response.message = args.toString();
 
         return response;
     }

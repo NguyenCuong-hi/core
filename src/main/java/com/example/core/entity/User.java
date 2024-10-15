@@ -40,7 +40,8 @@ public class User extends BaseObject implements UserDetails {
     @JoinTable(
             name = "users_role",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+            inverseJoinColumns = {@JoinColumn(name = "role_id")},
+            foreignKey = @ForeignKey(name = "fk_users_roles_id")
     )
     private Set<Role> roles = new HashSet<>();
 
@@ -51,7 +52,8 @@ public class User extends BaseObject implements UserDetails {
     @JoinTable(
             name = "users_group",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "group_id")}
+            inverseJoinColumns = {@JoinColumn(name = "group_id")},
+            foreignKey = @ForeignKey(name = "fk_users_group_user_id")
     )
     private Set<UserGroup> userGroups = new HashSet<>();
 

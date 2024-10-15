@@ -1,7 +1,5 @@
 package com.example.core.entity;
 
-import com.example.core.autditing.AuditableEntity;
-
 import javax.persistence.*;
 
 @Entity

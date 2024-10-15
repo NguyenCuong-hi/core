@@ -3,8 +3,6 @@ package com.example.core.controller;
 import com.example.core.dto.request.UserDto;
 import com.example.core.entity.User;
 import com.example.core.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

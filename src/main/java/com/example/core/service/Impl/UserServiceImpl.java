@@ -1,21 +1,26 @@
 package com.example.core.service.Impl;
 
+import com.example.core.constans.ErrorCodes;
+import com.example.core.constans.ErrorMessage;
 import com.example.core.dto.request.RoleDto;
 import com.example.core.dto.request.UserDto;
 import com.example.core.dto.request.UserGroupDto;
+import com.example.core.dto.request.search.SearchDto;
 import com.example.core.entity.Role;
 import com.example.core.entity.User;
 import com.example.core.entity.UserGroup;
+import com.example.core.exception.ExceptionResponse;
 import com.example.core.repository.RoleRepository;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -29,21 +34,28 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepo;
 
     @Override
-    public Page<UserDto> searchUser() {
+    public Page<UserDto> searchUser(SearchDto searchDto) {
 
         List<User> users = userRepo.getAllBy();
-        return null;
+        Pageable pageable = PageRequest.of(searchDto.getPageIndex(), searchDto.getPageSize());
+        return new PageImpl(users, pageable, users.size());
     }
 
     @Override
     public UserDto getUserById(Long id) {
-        User user = userRepo.getById(id);
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> {
+                    throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, id.toString());
+                });
         return new UserDto(user);
     }
 
     @Override
     public UserDto getUserByUsername(String username) {
         User user = userRepo.getUserByUsername(username);
+        if (Objects.isNull(user)) {
+            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, username);
+        }
         return new UserDto(user);
     }
 
@@ -57,7 +69,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto updateBy(Long id, UserDto userDto) {
-        User user = userRepo.getById(id);
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new ExceptionResponse(
+                        ErrorCodes.ENTITY_NOT_FOUND,
+                        ErrorMessage.ENTITY_NOT_FOUND,
+                        id.toString()));
         this.validUserDto(userDto);
         this.validBeforeUpdate(user);
         this.setUser(userDto, user);
@@ -75,8 +91,9 @@ public class UserServiceImpl implements UserService {
     private void setUser(UserDto userDto, User user) {
         Set<Role> roleSet = new HashSet<>();
         Set<UserGroup> userGroups = new HashSet<>();
+        this.validRoles(userDto.getRoles());
         this.setListRoles(userDto.getRoles(), roleSet);
-        this.validRoles(roleSet);
+
         this.setUserGroup(userDto.getUserGroups(), userGroups);
 
         user.setUsername(userDto.getUsername());
@@ -89,10 +106,12 @@ public class UserServiceImpl implements UserService {
         user.setNote(user.getNote());
     }
 
-    private void validRoles(Set<Role> roles) {
-//        if (!roleRepo.isExitsBy(roles)) {
-//
-//        }
+    private void validRoles(Set<RoleDto> roles) {
+        for (RoleDto role: roles){
+            if (!Objects.isNull(role.getId()) && roleRepo.existsById(role.getId())){
+                throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, "Role ID");
+            }
+        }
     }
 
     private void setListRoles(Set<RoleDto> dtoSet, Set<Role> entities) {
@@ -101,7 +120,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void setUserGroup(Set<UserGroupDto> userGroups, Set<UserGroup> entities){
+    private void setUserGroup(Set<UserGroupDto> userGroups, Set<UserGroup> entities) {
         for (UserGroupDto dto : userGroups) {
             entities.add(dto.toEntity());
         }
@@ -112,7 +131,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public Boolean deleteBy(Long id) {
-        User user = userRepo.getById(id);
+        User user = userRepo.findById(id).orElseThrow(()->
+                new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, id.toString()));
         this.validateBeforeDelete(user);
         userRepo.delete(user);
         return true;

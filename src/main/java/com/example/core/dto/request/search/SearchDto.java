@@ -8,8 +8,8 @@ public class SearchDto {
     private String keyword;
 
     public SearchDto(int pageIndex, int pageSize, String keyword) {
-        this.pageIndex = pageIndex;
-        this.pageSize = pageSize;
+        this.setPageIndex(pageIndex);
+        this.setPageSize(pageSize);
         this.keyword = keyword;
     }
 

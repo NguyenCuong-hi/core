@@ -11,6 +11,6 @@ public class ExceptionHandle {
 
     @ExceptionHandler(ExceptionResponse.class)
     protected ResponseEntity<Object> handleException (ExceptionResponse exception){
-        return ResponseEntity.ok(ResponseObject.buildException(HttpStatus.OK.value()));
+        return ResponseEntity.ok(ResponseObject.buildException(HttpStatus.OK.value(), exception));
     }
 }

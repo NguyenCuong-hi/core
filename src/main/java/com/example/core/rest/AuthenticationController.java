@@ -21,7 +21,7 @@ public class AuthenticationController {
         return authService.authenticate(dto);
     }
 
-    @PostMapping("/introspec")
+    @PostMapping("/introspect")
     IntroSpecRespDto auth (@RequestParam (value = "token") String token){
         return authService.introspect(token);
     }
