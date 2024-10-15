@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
     private void validRoles(Set<RoleDto> roles) {
         for (RoleDto role: roles){
-            if (!Objects.isNull(role.getId()) && roleRepo.existsById(role.getId())){
+            if (!Objects.isNull(role.getId()) && !roleRepo.existsById(role.getId())){
                 throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, "Role ID");
             }
         }

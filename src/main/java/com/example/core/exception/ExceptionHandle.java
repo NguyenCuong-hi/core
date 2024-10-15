@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionHandle {
 
+    public ExceptionHandle() {
+    }
+
     @ExceptionHandler(ExceptionResponse.class)
     protected ResponseEntity<Object> handleException (ExceptionResponse exception){
-        return ResponseEntity.ok(ResponseObject.buildException(HttpStatus.OK.value(), exception));
+        return ResponseEntity.ok(ResponseObject.buildException(exception.code, exception.message));
     }
 }

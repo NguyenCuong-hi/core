@@ -4,19 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="202410151148" author="CuongNV">
-        <sqlFile path="db/sql/role.sql"/>
-    </changeSet>
-
-    <changeSet id="202410151303" author="CuongNV">
-        <sqlFile path="db/sql/user_groups.sql"/>
-    </changeSet>
-
-    <changeSet id="202410151305" author="CuongNV">
-        <sqlFile path="db/sql/users_role.sql"/>
-    </changeSet>
-
-    <changeSet id="202410151307" author="CuongNV">
-        <sqlFile path="db/sql/users.sql"/>
+    <changeSet id="20241015105003" author="CuongNV">
+        <sqlFile path="db/changelog/sql/core.sql"/>
     </changeSet>
 </databaseChangeLog>

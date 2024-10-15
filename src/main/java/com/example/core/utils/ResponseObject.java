@@ -1,6 +1,8 @@
 package com.example.core.utils;
 
 
+import com.example.core.exception.ExceptionHandle;
+import com.example.core.exception.ExceptionResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
 
@@ -91,10 +93,10 @@ public class ResponseObject <T> {
         return response;
     }
 
-    public static <T> ResponseObject<T> buildException (int code, Object ... args){
+    public static <T> ResponseObject<T> buildException (int code, String message){
         ResponseObject<T> response = new ResponseObject<>();
         response.code = code;
-        response.message = args.toString();
+        response.message = message;
 
         return response;
     }

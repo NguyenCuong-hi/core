@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.core.constans.ErrorCodes.TOKEN_FAIL;
@@ -91,8 +92,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepo.getUserByUsername(request.getUsername());
-        if (ObjectUtils.isEmpty(user))
-            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, user.getUsername());
+        if (Objects.isNull(user))
+            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, "");
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated)
             throw new ExceptionResponse(ErrorCodes.AUTHENTICATION_FAIL, ErrorMessage.AUTHENTICATION_FAIL, null);
