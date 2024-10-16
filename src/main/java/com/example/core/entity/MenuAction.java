@@ -1,5 +1,7 @@
 package com.example.core.entity;
 
+import com.example.core.dto.request.MenuGroupReqDto;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,7 +24,7 @@ public class MenuAction extends BaseObject{
     private String definedId;
 
     @Column(name = "defined_name")
-    private String defined_name;
+    private String definedName;
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id",
@@ -69,12 +71,12 @@ public class MenuAction extends BaseObject{
         this.definedId = definedId;
     }
 
-    public String getDefined_name() {
-        return defined_name;
+    public String getDefinedName() {
+        return definedName;
     }
 
-    public void setDefined_name(String defined_name) {
-        this.defined_name = defined_name;
+    public void setDefinedName(String definedName) {
+        this.definedName = definedName;
     }
 
     public MenuGroup getMenuGroup() {
@@ -84,4 +86,6 @@ public class MenuAction extends BaseObject{
     public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
+
+
 }
