@@ -97,11 +97,12 @@ public class MenuActionServiceImpl implements MenuActionService {
         this.validCreateBy(action);
         MenuAction menuAction = new MenuAction();
         this.setValueCreate(action, menuAction);
-        return null;
+        menuActionRepo.save(menuAction);
+        return new MenuActionResDto(menuAction);
     }
 
     private void validCreateBy(MenuActionReqDto dto){
-
+//         Todo validate dto, entity
     }
 
     private void setValueCreate(MenuActionReqDto dto, MenuAction action){
@@ -115,11 +116,27 @@ public class MenuActionServiceImpl implements MenuActionService {
 
     @Override
     public MenuActionResDto updateBy(Long id, MenuActionReqDto action) {
-        return null;
+
+        MenuAction menuAction = menuActionRepo
+                .findById(id)
+                .orElseThrow(()-> new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND,
+                        ErrorMessage.ENTITY_NOT_FOUND, id.toString()));
+        this.validUpdateBy(action, menuAction);
+        this.setValueCreate(action, menuAction);
+        return new MenuActionResDto(menuAction);
+    }
+
+    private void validUpdateBy(MenuActionReqDto dto, MenuAction action){
+//         Todo validate dto, entity
     }
 
     @Override
     public Boolean deleteBy(Long id) {
-        return null;
+        boolean isExistMenuAction = menuActionRepo.existsById(id);
+        if (!isExistMenuAction){
+            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, id.toString());
+        }
+        menuActionRepo.deleteById(id);
+        return true;
     }
 }
