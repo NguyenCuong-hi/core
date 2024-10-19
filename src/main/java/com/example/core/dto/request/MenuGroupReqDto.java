@@ -1,7 +1,10 @@
 package com.example.core.dto.request;
 
 import com.example.core.entity.BaseObject;
+import com.example.core.entity.MenuAction;
+import com.example.core.entity.MenuGroup;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class MenuGroupReqDto extends BaseObjectDto {
@@ -100,4 +103,6 @@ public class MenuGroupReqDto extends BaseObjectDto {
     public void setMenuActions(Set<MenuActionReqDto> menuActions) {
         this.menuActions = menuActions;
     }
+
+
 }

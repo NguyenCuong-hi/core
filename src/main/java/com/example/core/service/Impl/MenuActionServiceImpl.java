@@ -105,7 +105,8 @@ public class MenuActionServiceImpl implements MenuActionService {
 //         Todo validate dto, entity
     }
 
-    private void setValueCreate(MenuActionReqDto dto, MenuAction action){
+    @Override
+    public void setValueCreate(MenuActionReqDto dto, MenuAction action){
         action.setActionName(dto.getActionName());
         action.setActionNameEn(dto.getActionNameEn());
         action.setIsActive(dto.getIsActive());
