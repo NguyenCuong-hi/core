@@ -3,21 +3,34 @@ package com.example.core.service.Impl;
 import com.example.core.constans.ErrorCodes;
 import com.example.core.constans.ErrorMessage;
 import com.example.core.dto.request.MenuGroupReqDto;
-import com.example.core.dto.request.MenuGroupResDto;
+import com.example.core.dto.request.search.SearchDto;
 import com.example.core.dto.response.MenuGroupResDto;
 import com.example.core.entity.MenuGroup;
-import com.example.core.entity.UserGroup;
 import com.example.core.exception.ExceptionResponse;
 import com.example.core.repository.MenuGroupRepository;
 import com.example.core.service.MenuGroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MenuGroupServiceImpl implements MenuGroupService {
 
     private final MenuGroupRepository menuGroupRepo;
+
+    @Override
+    public Page<MenuGroupResDto> searchBy(SearchDto searchDto) {
+
+        List<MenuGroup> menuGroups = menuGroupRepo.findAll();
+        Pageable pageable = PageRequest.of(searchDto.getPageIndex(), searchDto.getPageSize());
+        return new PageImpl(menuGroups, pageable, menuGroups.size());
+    }
 
     @Override
     public MenuGroupResDto getMenuGroup(Long menuGroupId) {
@@ -28,33 +41,32 @@ public class MenuGroupServiceImpl implements MenuGroupService {
     }
 
     @Override
-    public MenuGroupResDto createBy(MenuGroupReqDto MenuGroupResDto) {
-        this.validCreateBy(MenuGroupResDto);
-        UserGroup userGroup = MenuGroupResDto.toEntity();
-        userGrRepo.save(userGroup);
+    public MenuGroupResDto createBy(MenuGroupReqDto menuGroupReqDto) {
+        this.validCreateBy(menuGroupReqDto);
+        MenuGroup userGroup = menuGroupReqDto.toEntity();
+        menuGroupRepo.save(userGroup);
         return new MenuGroupResDto(userGroup);
     }
 
-    private void validCreateBy(MenuGroupResDto MenuGroupResDto) {
+    private void validCreateBy(MenuGroupReqDto menuGroupReqDto) {
 
     }
 
 
     @Override
-    public MenuGroupResDto updateBy(Long id, MenuGroupResDto dto) {
+    public MenuGroupResDto updateBy(Long id, MenuGroupReqDto dto) {
         this.validUpdateBy(dto);
-        UserGroup userGroup = userGrRepo.findById(id).orElseThrow();
-        this.setUserGrUpdate(dto, userGroup);
+        MenuGroup menuGroup = menuGroupRepo.findById(id).orElseThrow();
+        this.setMenuGroupUpdate(dto, menuGroup);
 
-        return new MenuGroupResDto(userGroup);
+        return new MenuGroupResDto(menuGroup);
     }
 
-    private void validUpdateBy(MenuGroupResDto MenuGroupResDto) {
+    private void validUpdateBy(MenuGroupReqDto menuGroupReqDto) {
 
     }
 
-    private void setUserGrUpdate(MenuGroupResDto dto, UserGroup entity) {
-        entity.setName(dto.getName());
+    private void setMenuGroupUpdate(MenuGroupReqDto dto, MenuGroup entity) {
         entity.setDescription(dto.getDescription());
     }
 
@@ -62,12 +74,11 @@ public class MenuGroupServiceImpl implements MenuGroupService {
     @Override
     public Boolean deleteBy(Long id) {
         this.isExistUserGr(id);
-        userGrRepo.deleteById(id);
+        menuGroupRepo.deleteById(id);
         return true;
     }
 
     public void isExistUserGr(Long id) {
 
     }
-}
 }

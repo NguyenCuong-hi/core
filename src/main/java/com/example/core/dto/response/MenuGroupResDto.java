@@ -15,7 +15,6 @@ public class MenuGroupResDto extends BaseObjectDto {
 
     private String moduleId;
 
-
     private String moduleName;
 
     private String description;

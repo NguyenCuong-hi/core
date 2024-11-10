@@ -25,7 +25,6 @@ public class CustomJwtDecode implements JwtDecoder {
     @Autowired
     private AuthenticationService authService;
 
-
     private NimbusJwtDecoder nimbusJwtDecoder = null;
 
     @Override
