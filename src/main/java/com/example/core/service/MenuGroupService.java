@@ -2,15 +2,14 @@ package com.example.core.service;
 
 import com.example.core.dto.request.MenuGroupReqDto;
 import com.example.core.dto.request.search.SearchDto;
-import com.example.core.dto.response.MenuActionResDto;
 import com.example.core.dto.response.MenuGroupResDto;
 import org.springframework.data.domain.Page;
 
 public interface MenuGroupService {
 
-    MenuGroupResDto getMenuGroup(Long menuGroupId);
+    Page<MenuGroupResDto> searchBy(SearchDto searchDto);
 
-    Page<MenuActionResDto> searchMenuGroup(SearchDto searchDto);
+    MenuGroupResDto getMenuGroup(Long menuGroupId);
 
     MenuGroupResDto createBy(MenuGroupReqDto menuGroupReqDto);
 

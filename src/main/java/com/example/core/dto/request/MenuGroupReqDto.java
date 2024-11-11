@@ -1,6 +1,5 @@
 package com.example.core.dto.request;
 
-import com.example.core.entity.BaseObject;
 import com.example.core.entity.MenuAction;
 import com.example.core.entity.MenuGroup;
 
@@ -22,38 +21,6 @@ public class MenuGroupReqDto extends BaseObjectDto {
     private Set<MenuActionReqDto> menuActions;
 
     public MenuGroupReqDto() {
-    }
-
-    public MenuGroupReqDto(String menuGroupId, String groupName, String moduleId, String moduleName,
-                           String description, Set<MenuActionReqDto> menuActions) {
-        this.menuGroupId = menuGroupId;
-        this.groupName = groupName;
-        this.moduleId = moduleId;
-        this.moduleName = moduleName;
-        this.description = description;
-        this.menuActions = menuActions;
-    }
-
-    public MenuGroupReqDto(AuditableEntityDto auditableEntityDto, String menuGroupId, String groupName, String moduleId,
-                           String moduleName, String description, Set<MenuActionReqDto> menuActions) {
-        super(auditableEntityDto);
-        this.menuGroupId = menuGroupId;
-        this.groupName = groupName;
-        this.moduleId = moduleId;
-        this.moduleName = moduleName;
-        this.description = description;
-        this.menuActions = menuActions;
-    }
-
-    public MenuGroupReqDto(BaseObject entity, String menuGroupId, String groupName,
-                           String moduleId, String moduleName, String description, Set<MenuActionReqDto> menuActions) {
-        super(entity);
-        this.menuGroupId = menuGroupId;
-        this.groupName = groupName;
-        this.moduleId = moduleId;
-        this.moduleName = moduleName;
-        this.description = description;
-        this.menuActions = menuActions;
     }
 
     public String getMenuGroupId() {
@@ -104,5 +71,21 @@ public class MenuGroupReqDto extends BaseObjectDto {
         this.menuActions = menuActions;
     }
 
+    public MenuGroup toEntity() {
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setMenuGroupId(this.getMenuGroupId());
+        menuGroup.setGroupName(this.getGroupName());
+        menuGroup.setModuleId(this.getModuleId());
+        menuGroup.setModuleName(this.getModuleName());
+        menuGroup.setDescription(this.getDescription());
 
+        Set<MenuAction> actions = new HashSet<>();
+        for (MenuActionReqDto req : this.getMenuActions()) {
+            MenuAction action = req.toEntity();
+            actions.add(action);
+        }
+        menuGroup.setMenuActions(actions);
+        return menuGroup;
+
+    }
 }

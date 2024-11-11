@@ -1,6 +1,7 @@
 package com.example.core.dto.request;
 
-import com.example.core.entity.BaseObject;
+import com.example.core.entity.MenuAction;
+import com.example.core.entity.MenuGroup;
 
 public class MenuActionReqDto extends BaseObjectDto {
 
@@ -14,48 +15,11 @@ public class MenuActionReqDto extends BaseObjectDto {
 
     private String definedId;
 
-    private String definedName;
+    private String defined_name;
 
     private MenuGroupReqDto menuGroup;
 
     public MenuActionReqDto() {
-    }
-
-    public MenuActionReqDto(String actionName, String actionNameEn, String isActive, String defineType,
-                            String definedId, String defined_name, MenuGroupReqDto menuGroup) {
-        this.actionName = actionName;
-        this.actionNameEn = actionNameEn;
-        this.isActive = isActive;
-        this.defineType = defineType;
-        this.definedId = definedId;
-        this.definedName = defined_name;
-        this.menuGroup = menuGroup;
-    }
-
-    public MenuActionReqDto(AuditableEntityDto auditableEntityDto, String actionName,
-                            String actionNameEn, String isActive, String defineType,
-                            String definedId, String defined_name, MenuGroupReqDto menuGroup) {
-        super(auditableEntityDto);
-        this.actionName = actionName;
-        this.actionNameEn = actionNameEn;
-        this.isActive = isActive;
-        this.defineType = defineType;
-        this.definedId = definedId;
-        this.definedName = defined_name;
-        this.menuGroup = menuGroup;
-    }
-
-    public MenuActionReqDto(BaseObject entity, String actionName, String actionNameEn,
-                            String isActive, String defineType, String definedId,
-                            String defined_name, MenuGroupReqDto menuGroup) {
-        super(entity);
-        this.actionName = actionName;
-        this.actionNameEn = actionNameEn;
-        this.isActive = isActive;
-        this.defineType = defineType;
-        this.definedId = definedId;
-        this.definedName = defined_name;
-        this.menuGroup = menuGroup;
     }
 
     public String getActionName() {
@@ -98,12 +62,12 @@ public class MenuActionReqDto extends BaseObjectDto {
         this.definedId = definedId;
     }
 
-    public String getDefinedName() {
-        return definedName;
+    public String getDefined_name() {
+        return defined_name;
     }
 
-    public void setDefinedName(String definedName) {
-        this.definedName = definedName;
+    public void setDefined_name(String defined_name) {
+        this.defined_name = defined_name;
     }
 
     public MenuGroupReqDto getMenuGroup() {
@@ -114,5 +78,10 @@ public class MenuActionReqDto extends BaseObjectDto {
         this.menuGroup = menuGroup;
     }
 
+    public MenuAction toEntity() {
+        MenuAction action = new MenuAction();
+
+        return action;
+    }
 
 }
