@@ -2,14 +2,17 @@ package com.example.core.service.Impl;
 
 import com.example.core.constans.ErrorCodes;
 import com.example.core.constans.ErrorMessage;
+import com.example.core.dto.request.PersonDto;
 import com.example.core.dto.request.RoleDto;
 import com.example.core.dto.request.UserDto;
 import com.example.core.dto.request.UserGroupDto;
 import com.example.core.dto.request.search.SearchDto;
+import com.example.core.entity.Person;
 import com.example.core.entity.Role;
 import com.example.core.entity.User;
 import com.example.core.entity.UserGroup;
 import com.example.core.exception.ExceptionResponse;
+import com.example.core.repository.PersonRepository;
 import com.example.core.repository.RoleRepository;
 import com.example.core.repository.UserRepository;
 import com.example.core.service.UserService;
@@ -32,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepo;
+
+    private final PersonRepository personRepos;
 
     @Override
     public Page<UserDto> searchUser(SearchDto searchDto) {
@@ -66,6 +71,32 @@ public class UserServiceImpl implements UserService {
         this.setUser(userDto, user);
         userRepo.save(user);
         return new UserDto(user);
+    }
+
+    @Override
+    public UserDto createBy(PersonDto personDto) {
+        Person person = new Person();
+        this.setPerson(personDto, person);
+        personRepos.save(person);
+
+        UserDto userDto = new UserDto();
+        return this.createBy(userDto);
+    }
+
+    private void setPerson(PersonDto personDto, Person person){
+        person.setFirstName(personDto.getFirstName());
+        person.setLastName(personDto.getLastName());
+        person.setDisplayName(personDto.getDisplayName());
+        person.setEmail(personDto.getEmail());
+        person.setPhone(personDto.getPhoneNumber());
+        person.setBirthDate(personDto.getBirthDate());
+        person.setBirthPlace(person.getBirthPlace());
+    }
+
+    private void setUserPerson(PersonDto personDto, UserDto userDto) {
+        userDto.setUsername(personDto.getDisplayName());
+        userDto.setPassword(personDto.getPhoneNumber());
+        userDto.setEmail(personDto.getEmail());
     }
 
     public UserDto updateBy(Long id, UserDto userDto) {

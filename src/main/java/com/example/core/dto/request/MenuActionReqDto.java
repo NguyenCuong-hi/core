@@ -1,7 +1,6 @@
 package com.example.core.dto.request;
 
 import com.example.core.entity.MenuAction;
-import com.example.core.entity.MenuGroup;
 
 public class MenuActionReqDto extends BaseObjectDto {
 
@@ -15,7 +14,7 @@ public class MenuActionReqDto extends BaseObjectDto {
 
     private String definedId;
 
-    private String defined_name;
+    private String definedName;
 
     private MenuGroupReqDto menuGroup;
 
@@ -62,12 +61,12 @@ public class MenuActionReqDto extends BaseObjectDto {
         this.definedId = definedId;
     }
 
-    public String getDefined_name() {
-        return defined_name;
+    public String getDefinedName() {
+        return definedName;
     }
 
-    public void setDefined_name(String defined_name) {
-        this.defined_name = defined_name;
+    public void setDefined_name(String definedName) {
+        this.definedName = definedName;
     }
 
     public MenuGroupReqDto getMenuGroup() {

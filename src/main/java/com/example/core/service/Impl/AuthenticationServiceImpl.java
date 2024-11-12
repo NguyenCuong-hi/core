@@ -41,7 +41,7 @@ import static com.example.core.constans.ErrorCodes.TOKEN_FAIL;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class  AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Value("${security.jwt.signal-key}")
