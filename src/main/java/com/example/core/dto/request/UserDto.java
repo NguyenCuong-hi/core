@@ -1,11 +1,14 @@
 package com.example.core.dto.request;
 
+import com.example.core.entity.Role;
 import com.example.core.entity.User;
+import com.example.core.entity.UserGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -58,7 +61,29 @@ public class UserDto extends AuditableEntityDto {
 
     public UserDto(User user) {
         this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.email = user.getEmail();
+
+        Iterator iRole;
+        Set<RoleDto> roleDtos = new HashSet<>();
+        if (user.getRoles().size() > 0){
+            iRole = user.getRoles().iterator();
+            while (iRole.hasNext()){
+                RoleDto roleDto = new RoleDto((Role) iRole.next());
+                roleDtos.add(roleDto);
+            }
+        }
+        this.roles = roleDtos;
+
+        Iterator iUserGroup;
+        Set<UserGroupDto> userGroupDtos  = new HashSet<>();
+        if (user.getUserGroups().size()> 0){
+            iUserGroup = user.getUserGroups().iterator();
+            while (iUserGroup.hasNext()){
+                UserGroupDto userGroupDto = new UserGroupDto((UserGroup) iUserGroup.next()) ;
+                userGroupDtos.add(userGroupDto);
+            }
+        }
+        this.userGroups = userGroupDtos;
 
     }
 

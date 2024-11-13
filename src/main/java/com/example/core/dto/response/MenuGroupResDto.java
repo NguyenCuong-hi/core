@@ -3,8 +3,10 @@ package com.example.core.dto.response;
 import com.example.core.dto.request.AuditableEntityDto;
 import com.example.core.dto.request.BaseObjectDto;
 import com.example.core.entity.BaseObject;
+import com.example.core.entity.MenuAction;
 import com.example.core.entity.MenuGroup;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class MenuGroupResDto extends BaseObjectDto {
@@ -86,6 +88,13 @@ public class MenuGroupResDto extends BaseObjectDto {
         this.moduleId = menuGroup.getModuleId();
         this.moduleName = menuGroup.getModuleName();
         this.description = menuGroup.getDescription();
+
+        Set<MenuActionResDto> menuActionResDtos = new HashSet<>();
+        for (MenuAction entity : menuGroup.getMenuActions()){
+            MenuActionResDto res = new MenuActionResDto(entity);
+            menuActionResDtos.add(res);
+        }
+        this.menuActions = menuActionResDtos;
     }
 
 }

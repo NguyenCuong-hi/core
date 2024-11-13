@@ -5,12 +5,7 @@ import com.example.core.dto.request.search.SearchDto;
 import com.example.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static com.example.core.constans.AuthorityConstants.ADMIN_VIEW;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,6 +23,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable(value = "id") Long id) {
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/username")
+    public UserDto getByUserName(@RequestParam(value = "username") String userName,
+                                 @RequestParam(value = "token") String token) {
+        return userService.getUserByUsername(userName, token);
     }
 
     @PostMapping

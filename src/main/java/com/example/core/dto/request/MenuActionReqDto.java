@@ -65,7 +65,7 @@ public class MenuActionReqDto extends BaseObjectDto {
         return definedName;
     }
 
-    public void setDefined_name(String definedName) {
+    public void setDefinedName(String definedName) {
         this.definedName = definedName;
     }
 

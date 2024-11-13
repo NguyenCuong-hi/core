@@ -1,8 +1,15 @@
 package com.example.core.dto.request;
 
+import com.example.core.dto.response.MenuGroupResDto;
+import com.example.core.entity.MenuAction;
+import com.example.core.entity.MenuGroup;
 import com.example.core.entity.Role;
+import liquibase.pro.packaged.M;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RoleDto extends AuditableEntityDto {
     private static final long serialVersionUID = 1L;
@@ -11,6 +18,8 @@ public class RoleDto extends AuditableEntityDto {
     private String name;
 
     private String description;
+
+    private Set<MenuGroupResDto>  menuGroups;
 
     public Long getId() {
         return id;
@@ -43,6 +52,14 @@ public class RoleDto extends AuditableEntityDto {
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
+        if (!CollectionUtils.isEmpty(entity.getMenuGroups())){
+            Set<MenuGroupResDto> menuGroups = new HashSet<>();
+            for (MenuGroup menuGroup : entity.getMenuGroups()){
+                MenuGroupResDto res = new MenuGroupResDto(menuGroup);
+                menuGroups.add(res);
+            }
+            this.menuGroups = menuGroups;
+        }
     }
 
     public Role toEntity() {

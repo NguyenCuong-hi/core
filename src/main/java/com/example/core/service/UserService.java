@@ -15,6 +15,8 @@ public interface UserService {
 
     UserDto getUserByUsername(String username);
 
+    UserDto getUserByUsername(String username, String token);
+
     UserDto createBy(UserDto user);
 
     UserDto createBy(PersonDto personDto);

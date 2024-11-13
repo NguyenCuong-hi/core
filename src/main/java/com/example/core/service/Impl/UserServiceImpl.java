@@ -8,6 +8,7 @@ import com.example.core.dto.request.UserDto;
 import com.example.core.dto.request.UserGroupDto;
 import com.example.core.dto.request.search.SearchDto;
 import com.example.core.entity.Person;
+import com.example.core.dto.response.IntroSpecRespDto;
 import com.example.core.entity.Role;
 import com.example.core.entity.User;
 import com.example.core.entity.UserGroup;
@@ -15,11 +16,13 @@ import com.example.core.exception.ExceptionResponse;
 import com.example.core.repository.PersonRepository;
 import com.example.core.repository.RoleRepository;
 import com.example.core.repository.UserRepository;
+import com.example.core.service.AuthenticationService;
 import com.example.core.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepo;
+
+    private final AuthenticationService authService;
 
     private final PersonRepository personRepos;
 
@@ -57,6 +62,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUsername(String username) {
+        User user = userRepo.getUserByUsername(username);
+        if (Objects.isNull(user)) {
+            throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, username);
+        }
+        return new UserDto(user);
+    }
+
+    @Override
+    public UserDto getUserByUsername(String username, String token) {
+        IntroSpecRespDto verifyToken = authService.introspect(token);
+
+        if (Objects.isNull(verifyToken) || !verifyToken.getValid()){
+            throw new ExceptionResponse(ErrorCodes.TOKEN_MISMATCH, ErrorMessage.TOKEN_MISMATCH, token);
+        }
+
         User user = userRepo.getUserByUsername(username);
         if (Objects.isNull(user)) {
             throw new ExceptionResponse(ErrorCodes.ENTITY_NOT_FOUND, ErrorMessage.ENTITY_NOT_FOUND, username);

@@ -2,7 +2,6 @@ package com.example.core.dto.response;
 
 import com.example.core.dto.request.AuditableEntityDto;
 import com.example.core.dto.request.BaseObjectDto;
-import com.example.core.entity.BaseObject;
 import com.example.core.entity.MenuAction;
 
 public class MenuActionResDto extends BaseObjectDto {
@@ -22,30 +21,30 @@ public class MenuActionResDto extends BaseObjectDto {
     private MenuGroupResDto menuGroup;
 
     public MenuActionResDto(String actionName, String actionNameEn, String isActive, String defineType,
-                            String definedId, String defined_name, MenuGroupResDto menuGroup) {
+                            String definedId, String definedName, MenuGroupResDto menuGroup) {
         this.actionName = actionName;
         this.actionNameEn = actionNameEn;
         this.isActive = isActive;
         this.defineType = defineType;
         this.definedId = definedId;
-        this.definedName = defined_name;
+        this.definedName = definedName;
         this.menuGroup = menuGroup;
     }
 
     public MenuActionResDto(AuditableEntityDto auditableEntityDto, String actionName,
                             String actionNameEn, String isActive, String defineType, String definedId,
-                            String defined_name, MenuGroupResDto menuGroup) {
+                            String definedName, MenuGroupResDto menuGroup) {
         super(auditableEntityDto);
         this.actionName = actionName;
         this.actionNameEn = actionNameEn;
         this.isActive = isActive;
         this.defineType = defineType;
         this.definedId = definedId;
-        this.definedName = defined_name;
+        this.definedName = definedName;
         this.menuGroup = menuGroup;
     }
 
-    public MenuActionResDto( MenuAction menuAction) {
+    public MenuActionResDto(MenuAction menuAction) {
         this.actionName = menuAction.getActionName();
         this.actionNameEn = menuAction.getActionNameEn();
         this.isActive = menuAction.getIsActive();
