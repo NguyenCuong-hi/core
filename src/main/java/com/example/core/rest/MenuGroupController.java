@@ -1,7 +1,6 @@
 package com.example.core.rest;
 
 import com.example.core.dto.request.MenuGroupReqDto;
-import com.example.core.dto.request.RoleDto;
 import com.example.core.dto.request.search.SearchDto;
 import com.example.core.dto.response.MenuGroupResDto;
 import com.example.core.service.MenuGroupService;
@@ -27,18 +26,18 @@ public class MenuGroupController {
     }
 
     @PostMapping
-    public MenuGroupResDto createBy(@RequestBody MenuGroupReqDto roleDto) {
-        return roleService.createBy(roleDto);
+    public MenuGroupResDto createBy(@RequestBody MenuGroupReqDto menuGroupReqDto) {
+        return menuGroupService.createBy(menuGroupReqDto);
     }
 
     @PutMapping("/{id}")
-    public RoleDto updateBy(@PathVariable(value = "id") Long id,
-                            @RequestBody RoleDto roleDto) {
-        return roleService.updateBy(id, roleDto);
+    public MenuGroupResDto updateBy(@PathVariable(value = "id") Long id,
+                            @RequestBody MenuGroupReqDto menuGroupReqDto) {
+        return menuGroupService.updateBy(id, menuGroupReqDto);
     }
 
     @DeleteMapping("/{id}")
     public Boolean deleteBy(@PathVariable(value = "id") Long id) {
-        return roleService.deleteBy(id);
+        return menuGroupService.deleteBy(id);
     }
 }

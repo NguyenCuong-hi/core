@@ -2,7 +2,9 @@ package com.example.core.dto.request;
 
 import com.example.core.entity.MenuAction;
 import com.example.core.entity.MenuGroup;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,9 +82,11 @@ public class MenuGroupReqDto extends BaseObjectDto {
         menuGroup.setDescription(this.getDescription());
 
         Set<MenuAction> actions = new HashSet<>();
-        for (MenuActionReqDto req : this.getMenuActions()) {
-            MenuAction action = req.toEntity();
-            actions.add(action);
+        if (!CollectionUtils.isEmpty(this.getMenuActions())){
+            for (MenuActionReqDto req : this.getMenuActions()) {
+                MenuAction action = req.toEntity();
+                actions.add(action);
+            }
         }
         menuGroup.setMenuActions(actions);
         return menuGroup;

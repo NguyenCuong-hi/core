@@ -63,7 +63,7 @@ public class UserServiceTest {
     @Test
     void createUserValidRequestSuccess(){
         when(userRepo.existsById(anyLong())).thenReturn(false);
-        when(userService.createBy(any())).thenReturn(userDto);
+//        when(userService.createBy(any())).thenReturn(userDto);
 
         var response = userService.createBy(userDto);
 
